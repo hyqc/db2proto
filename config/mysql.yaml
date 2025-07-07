@@ -1,0 +1,21 @@
+#mysql 字段类型到 proto字段类型的映射  dsn: root:123456@tcp(192.168.9.212:3306)/hope_city_web
+mysql:
+  int: int32
+  tinyint: int32
+  smallint: int32
+  mediumint: int32
+  bigint: int64
+  float: float
+  double: double
+  decimal: string
+  varchar: string
+  char: string
+  text: string
+  longtext: string
+  date: int64
+  datetime: int64
+  timestamp: int64
+  time: string
+  blob: bytes
+  json: string
+

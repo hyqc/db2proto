@@ -1,0 +1,5 @@
+syntax = "proto3";
+package model;
+option go_package = "./model_proto;model_proto";
+
+message ChannelElem{}
