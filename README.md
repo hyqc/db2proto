@@ -26,18 +26,19 @@
 - source: 数据源的键名
     - driver: 数据库驱动名称
     - dbname: 数据库名称
-    - dsn: 数据源链接配置，以%s结束，用于格式化生成完整 dsn
+    - dsn: 数据源链接配置
 
 - 示例：
+
 ```yaml
 #数据源
 source:
   #数据库驱动名称
   driver: mysql
   #数据库名称
-  dbname: hope_city_web
+  dbname: website
   #数据源链接配置，以%s结束，用于
-  dsn: root:123456@tcp(192.168.9.111:3306)/%s
+  dsn: root:123456@tcp(192.168.9.111:3306)/website
 ```
 
 #### 生成的proto配置
@@ -51,6 +52,7 @@ source:
         - suffix: 后缀
 
 - 示例：
+
 ```yaml
 #生成的proto配置
 proto:
@@ -81,35 +83,37 @@ proto:
         - type: field字段转protobuf的message的字段类型
 
 - 示例：
+
 ```yaml
 #自定义数据源 对特定表的特定字段自定义类型
 custom:
-#表名
-- table: web_account
-  #表中的字段类型，优先级fields-> types
-  types:
-  datetime: int64
-  date: int64
-  #表中的特定字段
-  fields:
-  #表中的字段名称
-    - field: bind_at
-      #表中的类型转成proto的类型
-      type: int64
-    - field: created_at
-      type: int64
-    - field: updated_at
-      type: int64
-- table: web_index_config
-  types:
-  datetime: int64
-  date: int64
-  fields:
-    - field: channels
-      type: repeated ChannelElem
+  #表名
+  - table: web_account
+    #表中的字段类型，优先级fields-> types
+    types:
+    datetime: int64
+    date: int64
+    #表中的特定字段
+    fields:
+      #表中的字段名称
+      - field: bind_at
+        #表中的类型转成proto的类型
+        type: int64
+      - field: created_at
+        type: int64
+      - field: updated_at
+        type: int64
+  - table: web_index_config
+    types:
+    datetime: int64
+    date: int64
+    fields:
+      - field: channels
+        type: repeated ChannelElem
 ```
 
 #### 数据源对应的默认类型映射
+
 配置数据源的默认类型映射配置。如果source的driver配置是mysql，则需要单独配置 mysql.yaml 文件作为 mysql的默认映射
 
 - xxx: 数据源名称，如 mysql 等 （数据类型：数据源的类型:protobuf的类型 map 映射）
@@ -138,4 +142,87 @@ mysql:
   time: string
   blob: bytes
   json: string
+```
+
+#### 完整配置示例
+
+- config.yaml: 数据源配置
+
+```yaml
+#数据源
+source:
+  #数据库驱动名称
+  driver: mysql
+  #数据库名称
+  dbname: website
+  #数据源名称
+  dsn: root:123456@tcp(192.168.9.111:3306)/website
+#生成的proto配置
+proto:
+  #生成的proto文件路径
+  path: ./proto
+  #生成的proto文件名称
+  name: web_proto.proto
+  #proto的header配置
+  headers:
+    - syntax = "proto3";
+    - package model;
+    - option go_package = "./model_proto;model";
+    - import "common.proto";
+    #- import \"google/protobuf/timestamp.proto\";
+  #生成的proto对应model的前缀和后缀,示例表web_account，prefix=Test suffix=Model，则生成TestWebAccountModel的proto的message
+  model:
+    prefix: DB
+    suffix: Model
+#自定义数据源 对特定表的特定字段自定义类型
+custom:
+  #表名
+  - table: web_account
+    #表中的字段类型，优先级fields-> types
+    types:
+      datetime: int64
+      date: int64
+    #表中的特定字段
+    fields:
+      #表中的字段名称
+      - field: bind_at
+        #表中的类型转成proto的类型
+        type: int64
+      - field: created_at
+        type: int64
+      - field: updated_at
+        type: int64
+  - table: web_index_config
+    types:
+      datetime: int64
+      date: int64
+    fields:
+      - field: channels
+        type: repeated ChannelElem
+```
+
+- mysql.yaml: 对应的数据库的类型映射
+
+```
+#mysql 字段类型到 proto字段类型的映射  dsn: root:123456@tcp(192.168.9.111:3306)/website
+mysql:
+  int: int32
+  tinyint: int32
+  smallint: int32
+  mediumint: int32
+  bigint: int64
+  float: float
+  double: double
+  decimal: string
+  varchar: string
+  char: string
+  text: string
+  longtext: string
+  date: int64
+  datetime: int64
+  timestamp: int64
+  time: string
+  blob: bytes
+  json: string
+
 ```

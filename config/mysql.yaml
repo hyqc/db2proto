@@ -1,4 +1,4 @@
-#mysql 字段类型到 proto字段类型的映射  dsn: root:123456@tcp(192.168.9.212:3306)/hope_city_web
+#mysql 字段类型到 proto字段类型的映射  dsn: root:123456@tcp(192.168.9.111:3306)/website
 mysql:
   int: int32
   tinyint: int32
