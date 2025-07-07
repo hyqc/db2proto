@@ -26,13 +26,7 @@ type TableFieldElem struct {
 }
 
 func Table2ProtoMessageName(table string, m *ProtoModel) string {
-	if m.Prefix != "" {
-		table = fmt.Sprintf("%s_%s", m.Prefix, table)
-	}
-	if m.Suffix != "" {
-		table = fmt.Sprintf("%s_%s", table, m.Suffix)
-	}
-	return SnakeToCamel(table, true)
+	return fmt.Sprintf("%s%s%s", m.Prefix, SnakeToCamel(table, true), m.Suffix)
 }
 
 // SnakeToCamel 将蛇形命名转换为小驼峰命名
